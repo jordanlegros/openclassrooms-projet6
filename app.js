@@ -1,17 +1,23 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
+const path = require('path');
+require('dotenv').config();
 
 //import des routers
 const booksRoute = require('./routes/booksRoute');
 const usersRoute = require('./routes/usersRoute');
 
-mongoose.connect('mongodb+srv://userOC:testpass1234@cluster0.8eszoca.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 
-
+// Middleware de journalisation des requêtes
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+});
 
 // Middleware CORS
 app.use((req, res, next) => {
@@ -30,6 +36,7 @@ app.use(express.json());
 
 app.use('/api/books', booksRoute);
 app.use('/api/auth', usersRoute);
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 
 

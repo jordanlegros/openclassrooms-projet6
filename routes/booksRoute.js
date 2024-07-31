@@ -4,21 +4,28 @@ const booksController = require('../controllers/booksController.js');
 
 const router = express.Router();
 
+const multer = require('../middleware/multer-config.js');
+const compressImage = require('../middleware/compressImage.js');
 
-
-//récupération de la liste des livres
+// Récupération de la liste des livres
 router.get('/', booksController.getAllBooks);
 
-//récupération d'un livre spécifique
+// Récupération du meilleur rating
+router.get('/bestrating', booksController.getBestRating);
+
+// Récupération d'un livre spécifique
 router.get('/:id', booksController.getOneBook);
 
-//Ajout d'un livre
-router.post('/',auth, booksController.createBook);
+// Ajout d'un livre
+router.post('/', auth, multer, compressImage, booksController.createBook);
 
-//modification d'un livre
-router.put('/:id',auth, booksController.modifyBook);
+// Modification d'un livre
+router.put('/:id', auth, multer, compressImage, booksController.modifyBook);
 
-//suppression d'un livre
+// Suppression d'un livre
 router.delete('/:id', auth, booksController.deleteBook);
+
+// Ajout d'un rating
+router.post('/:id/rating', auth, booksController.addRating);
 
 module.exports = router;
