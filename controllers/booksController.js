@@ -93,6 +93,12 @@ exports.createBook = (req, res, next) => {
         delete bookObject._id;
         delete bookObject._userId;
 
+         // Calculer averageRating
+         const ratings = bookObject.ratings || [];
+         const totalRatings = ratings.reduce((acc, rating) => acc + rating.grade, 0);
+         const averageRating = ratings.length > 0 ? totalRatings / ratings.length : 0;
+ 
+
         // Vérification de la présence du fichier image
         if (!req.file) { 
             return res.status(400).json({ message: 'No image file received' });
@@ -107,7 +113,8 @@ exports.createBook = (req, res, next) => {
         const book = new Book({
             ...bookObject,
             userId: req.auth.userId,
-            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+            averageRating
         });
 
         // Enregistrement du livre
