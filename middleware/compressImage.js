@@ -18,7 +18,7 @@ const compressAndSaveImage = async (req, res, next) => {
     // Déterminer l'extension en fonction du MIME type
     const extension = MIME_TYPES[mimetype];
     if (!extension) {
-        return res.status(400).json({ error: 'Type MIME non supporté' });
+        return res.status(400).json({ error: 'Unsupported MIME type' });
     }
 
     // Créer un nom de fichier unique avec un timestamp

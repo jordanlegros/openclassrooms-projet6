@@ -5,7 +5,6 @@ require('dotenv').config();
 
 //Contrôleur pour ajouter un utilisateur à la base
 exports.signup = (req, res, next) => {
-    console.log('Tentative de création d\'un nouvel utilisateur');
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
             const user = new User({
@@ -14,16 +13,13 @@ exports.signup = (req, res, next) => {
             });
             user.save()
                 .then(() => {
-                    console.log(`Utilisateur créé : ${user.email}`);
-                    res.status(201).json({ message: 'Utilisateur créé' });
+                    res.status(201).json({ message: 'User created' });
                 })
                 .catch(error => {
-                    console.log(`Erreur lors de la création de l'utilisateur : ${error}`);
                     res.status(400).json({ error });
                 });
         })
         .catch(error => {
-            console.log(`Erreur lors du hash du mot de passe : ${error}`);
             res.status(500).json({ error });
         });
 };
@@ -32,20 +28,16 @@ exports.signup = (req, res, next) => {
 
 //Contrôleur pour s'identifier
 exports.login = (req, res, next) => {
-    console.log('Tentative de connexion pour l\'email :', req.body.email);
     User.findOne({ email: req.body.email })
         .then(user => {
             if (user === null) {
-                console.log('Utilisateur non trouvé');
-                res.status(401).json({ message: 'Paire identifiant/mot de passe incorrecte' });
+                res.status(401).json({ message: 'Incorrect username/password pair.' });
             } else {
                 bcrypt.compare(req.body.password, user.password)
                     .then(valid => {
                         if (!valid) {
-                            console.log('Mot de passe incorrect pour l\'utilisateur :', req.body.email);
-                            res.status(401).json({ message: 'Paire identifiant/mot de passe incorrecte' });
+                            res.status(401).json({ message: 'Incorrect username/password pair.' });
                         } else {
-                            console.log('Connexion réussie pour l\'utilisateur :', req.body.email);
                             res.status(200).json({
                                 userId: user._id,
                                 token: jwt.sign(
@@ -57,13 +49,11 @@ exports.login = (req, res, next) => {
                         }
                     })
                     .catch(error => {
-                        console.log(`Erreur lors de la comparaison des mots de passe : ${error}`);
                         res.status(500).json({ error });
                     });
             }
         })
         .catch(error => {
-            console.log(`Erreur lors de la recherche de l'utilisateur : ${error}`);
             res.status(500).json({ error });
         });
 };
