@@ -25,11 +25,6 @@ exports.getAllBooks = (req, res, next) => {
     
     Book.find()
         .then(books => {
-            if (books.length === 0) {
-                // Si aucun livre n'est trouvé, renvoyer une réponse 404
-                return res.status(404).json({ message: 'Book not found' });
-            }
-
             res.status(200).json(books);
         })
         .catch(error => {
@@ -39,13 +34,16 @@ exports.getAllBooks = (req, res, next) => {
 };
 
 
-//Controleur pour récupérer tout les livres de la base
+//Controleur pour récupérer les livres les mieux notés
 exports.getBestRating = (req, res, next) => {
 
 
     // Trouver tous les livres
     Book.find()
+        .sort({averageRating: -1})
+        .limit(3)
         .then(books => {
+            /* ancienne méthode
             if (books.length === 0) {
                 // Si aucun livre n'est trouvé, renvoyer une erreur 404
                 return res.status(404).json({ message: 'Book not found' });
@@ -66,7 +64,9 @@ exports.getBestRating = (req, res, next) => {
 
             // Limiter les résultats aux 3 meilleurs livres
             const topBooks = books.slice(0, 3);
-            res.status(200).json(topBooks);
+            */
+
+            res.status(200).json(books);
         })
         .catch(error => {
             // En cas d'erreur lors de la récupération des livres

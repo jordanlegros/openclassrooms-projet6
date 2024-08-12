@@ -2,6 +2,8 @@ const sharp = require('sharp');
 const fs = require('fs').promises;
 const path = require('path');
 
+
+//définition des types Mime
 const MIME_TYPES = {
     'image/jpg': '.jpg',
     'image/jpeg': '.jpg',
@@ -13,6 +15,7 @@ const compressAndSaveImage = async (req, res, next) => {
         return next();
     }
 
+    //récupération des données
     const { buffer, originalname, mimetype } = req.file;
 
     // Déterminer l'extension en fonction du MIME type

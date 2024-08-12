@@ -30,10 +30,10 @@ app.use((req, res, next) => {
 
 
 
-//intercepte le json pour le mettre en req.body
+//intercepte le json pour le mettre en req.body, on parse le json en objet javascript accessible via req.body
 app.use(express.json());
 
-
+//définition des routes
 app.use('/api/books', booksRoute);
 app.use('/api/auth', usersRoute);
 app.use('/images', express.static(path.join(__dirname, 'images')));
